@@ -1,0 +1,6 @@
+flask
+gunicorn
+google-play-scraper
+rapidfuzz
+requests
+apscheduler

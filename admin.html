@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="hi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin</title>
+<style>
+:root{--bg:#f6f7fb;--c:#fff;--t:#1c1f2a;--m:#6b7280;--b:#e5e7eb;--p:#4f46e5}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1117;--c:#181b24;--t:#eef0f6;--m:#9aa1b2;--b:#2a2f3c;--p:#818cf8}}
+body{margin:0;background:var(--bg);color:var(--t);font:14px system-ui,sans-serif;padding:14px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}h1{font-size:18px;margin:0}
+.box{overflow-x:auto;background:var(--c);border:1px solid var(--b);border-radius:12px}
+table{border-collapse:collapse;width:100%;min-width:720px}th,td{padding:9px;border-bottom:1px solid var(--b);text-align:left;vertical-align:top}
+th{font-size:12px;color:var(--m)}small{color:var(--m)}
+button{padding:6px 10px;border:0;border-radius:6px;background:var(--p);color:#fff;font-size:12px}
+.r{background:#dc2626}.pending{color:#b45309}.approved{color:#16a34a}.rejected{color:#dc2626}
+form{display:inline}
+</style></head><body>
+<div class="top"><h1>Submissions</h1>
+<form method="post"><input type="hidden" name="key" value="{{ key }}"><input type="hidden" name="action" value="run"><button>Abhi verify chalao</button></form></div>
+<div class="box"><table>
+<tr><th>#</th><th>User</th><th>App</th><th>Review</th><th>Status</th><th>Screenshots</th><th></th></tr>
+{% for s in rows %}<tr>
+<td>{{ s.id }}</td><td>{{ s.user_ref }}<br><small>{{ s.created[:16] }}</small></td><td>{{ s.package }}</td>
+<td><b>{{ s.name }}</b> · {{ s.rating }}★<br><small>{{ (s.comment or '')[:90] }}</small></td>
+<td class="{{ s.status }}">{{ s.status }}<br><small>{{ s.reason or '' }}</small></td>
+<td>{% for f in s.files.split(',') %}<a href="/file/{{ f }}?key={{ key }}" target="_blank">{{ loop.index }}</a> {% endfor %}</td>
+<td>{% if s.status=='pending' %}<form method="post"><input type="hidden" name="key" value="{{ key }}"><input type="hidden" name="id" value="{{ s.id }}">
+<button name="action" value="approve">Approve</button> <button class="r" name="action" value="reject">Reject</button></form>{% endif %}</td>
+</tr>{% endfor %}
+</table></div></body></html>
