@@ -1,1 +1,40 @@
-
+<!doctype html>
+<html lang="hi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Review Verify</title>
+<style>
+:root{--bg:#f6f7fb;--c:#fff;--t:#1c1f2a;--m:#6b7280;--b:#e5e7eb;--p:#4f46e5}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1117;--c:#181b24;--t:#eef0f6;--m:#9aa1b2;--b:#2a2f3c;--p:#818cf8}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:15px system-ui,sans-serif}
+.w{max-width:520px;margin:auto;padding:16px}h1{font-size:20px;margin:8px 0 14px}h2{font-size:15px;margin:22px 0 8px}
+.card{background:var(--c);border:1px solid var(--b);border-radius:12px;padding:14px}
+label{display:block;font-size:12px;color:var(--m);margin:10px 0 4px}
+input,textarea{width:100%;padding:10px;border:1px solid var(--b);border-radius:8px;background:var(--bg);color:var(--t);font:inherit}
+button{width:100%;margin-top:14px;padding:11px;border:0;border-radius:8px;background:var(--p);color:#fff;font-weight:600;font-size:15px}
+.m{padding:10px;border-radius:8px;margin-bottom:12px;font-size:14px}.ok{background:#dcfce7;color:#14532d}.er{background:#fee2e2;color:#7f1d1d}
+.s{display:flex;justify-content:space-between;gap:8px;padding:10px 0;border-top:1px solid var(--b)}.s:first-child{border:0}
+.s small{color:var(--m);display:block}.tag{font-size:12px;padding:2px 8px;border-radius:99px;height:fit-content;white-space:nowrap}
+.pending{background:#fef3c7;color:#78350f}.approved{background:#dcfce7;color:#14532d}.rejected{background:#fee2e2;color:#7f1d1d}
+details{margin-top:10px;color:var(--m);font-size:13px}
+</style></head><body><div class="w">
+<h1>Review Verify</h1>
+{% if msg %}<div class="m {{ 'ok' if ok else 'er' }}">{{ msg }}</div>{% endif %}
+<form class="card" method="post" action="/submit" enctype="multipart/form-data">
+<label>Aapka User ID / Mobile</label><input name="user_ref" value="{{ ref }}" required>
+<label>App ka Play Store link ya package ID</label><input name="package" placeholder="com.example.app" required>
+<label>Review screenshots (ek ya zyada)</label><input type="file" name="shots" accept="image/*" multiple required>
+<details><summary>Auto na pade to khud bharo</summary>
+<label>Review mein dikhne wala naam</label><input name="name">
+<label>Rating (1-5)</label><input name="rating" type="number" min="1" max="5">
+<label>Review text</label><textarea name="comment" rows="3"></textarea></details>
+<button>Submit karo</button>
+</form>
+<h2>Meri submissions</h2>
+<form method="get"><input name="ref" value="{{ ref }}" placeholder="User ID daal kar dekho"></form>
+<div class="card" style="margin-top:8px">
+{% for s in subs %}<div class="s"><div><b>{{ s.package }}</b>
+<small>{{ s.name }} · {{ s.rating }}★ · {{ s.created[:10] }}</small>
+<small>{{ s.reason or 'Check ho raha hai, deadline ' ~ s.deadline[:10] }}</small></div>
+<span class="tag {{ s.status }}">{{ s.status }}</span></div>
+{% else %}<small style="color:var(--m)">Abhi koi submission nahi.</small>{% endfor %}
+</div></div></body></html>
